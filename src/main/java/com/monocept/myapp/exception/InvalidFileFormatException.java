@@ -1,0 +1,7 @@
+package com.monocept.myapp.exception;
+
+public class InvalidFileFormatException extends Exception {
+    public InvalidFileFormatException(String message) {
+        super(message);
+    }
+}
