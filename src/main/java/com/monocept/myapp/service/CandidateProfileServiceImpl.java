@@ -92,8 +92,9 @@ public class CandidateProfileServiceImpl implements CandidateProfileService{
 					Integer totalExperience = getIntegerCellValue(row.getCell(6));
 					Integer relevantExperience = getIntegerCellValue(row.getCell(7));
 					String location = getStringCellValue(row.getCell(8));
-
+					String noticePeriod = getStringCellValue(row.getCell(9));
 					// Create a CandidateProfile object and set its properties
+					
 					CandidateProfile profile = new CandidateProfile();
 					profile.setId(generateCustomId());
 					profile.setDate(date);
@@ -105,6 +106,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService{
 					profile.setTotalExperience(totalExperience);
 					profile.setRelevantExperience(relevantExperience);
 					profile.setLocation(location);
+					profile.setNoticePeriod(noticePeriod);
 					System.out.println(profile);
 
 					// Check for duplicates

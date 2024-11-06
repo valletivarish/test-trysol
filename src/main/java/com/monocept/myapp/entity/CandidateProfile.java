@@ -43,4 +43,7 @@ public class CandidateProfile {
 
     @NotNull(message = "Date is required")
     private LocalDate date; // New field for date from the Excel sheet
+    
+    @NotBlank(message = " Notice period is required")
+    private String noticePeriod;
 }
