@@ -20,9 +20,9 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Bank Application Api")
+                        .title("Trysol")
                         .version("1.0")
-                        .description("This is the API documentation for the Bank Application Api"))
+                        .description("This is the API documentation for Trysol Global Services"))
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new Components()
                         .addSecuritySchemes("bearerAuth", new SecurityScheme()

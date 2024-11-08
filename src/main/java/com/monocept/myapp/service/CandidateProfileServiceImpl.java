@@ -146,62 +146,62 @@ public class CandidateProfileServiceImpl implements CandidateProfileService{
 		audit.setInsertedRows(insertedRows);
 		audit.setSkippedRows(skippedRows);
 		uploadAuditRepository.save(audit);
-		sendUploadNotificationToAdmins(insertedRows, skippedRows, files.length);
+		//sendUploadNotificationToAdmins(insertedRows, skippedRows, files.length);
 		return duplicatesSkipped;
 	}
 	
-	private void sendUploadNotificationToAdmins(int insertedRows, int skippedRows, int totalFiles) {
-	    // Fetch all admin users
-	    List<Admin> adminUsers = adminRepository.findAll();
-	    
-	    // Map to User to extract emails (assuming Admin has a User reference)
-	    List<String> adminEmails = adminUsers.stream()
-	                                         .map(Admin::getUser) // Assuming Admin has a getUser() method
-	                                         .map(User::getEmail) // Extract emails from User objects
-	                                         .filter(Objects::nonNull) // Filter out any null emails
-	                                         .toList(); // Convert to a list
-
-	    // Fetch the current user from security context
-	    String uploaderEmail = getUsernameFromSecurityContext();
-	    User user = userRepository.findByEmail(uploaderEmail).orElseThrow(()-> new NoRecordFoundException("No USer found"));
-	    String fullName;
-	    if(user.getAdmin()!=null) {
-	    	fullName=user.getAdmin().getFirstName()+" "+user.getAdmin().getLastName();
-	    }
-	    else {
-	    	fullName=user.getEmployee().getFirstName()+" "+user.getEmployee().getLastName();
-	    }
-	    // Get the current date and time
-	    LocalDateTime now = LocalDateTime.now();
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm a");
-	    String formattedDateTime = now.format(formatter);
-
-	    // Prepare email content
-	    String subject = "Notification: New Candidate Profiles Uploaded";
-	    String body = String.format(
-	            "Dear Admins,\n\n" +
-	            "We are pleased to inform you that a new batch of candidate profiles has been successfully uploaded to the Trysol system.\n\n" +
-	            "Please find the details of the upload below:\n" +
-	            "----------------------------------\n" +
-	            "Company Name: Trysol Global Services\n" +
-	            "Uploader Name: %s\n" +
-	            "Upload Date and Time: %s\n" +
-	            "Total Files Uploaded: %d\n" +
-	            "Inserted Rows: %d\n" +
-	            "Skipped Rows: %d\n" +
-	            "----------------------------------\n\n" +
-	            "We kindly request that you log in to the system to review the newly uploaded profiles at your earliest convenience.\n\n" +
-	            "Thank you for your attention to this matter.\n\n" +
-	            "Best regards,\n" +
-	            "The Trysol Team",
-	            fullName, formattedDateTime, totalFiles, insertedRows, skippedRows
-	        );
-
-	    // Send email if there are admin emails
-	    if (!adminEmails.isEmpty()) {
-	        emailService.sendEmail(subject, body, adminEmails);
-	    }
-	}
+//	private void sendUploadNotificationToAdmins(int insertedRows, int skippedRows, int totalFiles) {
+//	    // Fetch all admin users
+//	    List<Admin> adminUsers = adminRepository.findAll();
+//	    
+//	    // Map to User to extract emails (assuming Admin has a User reference)
+//	    List<String> adminEmails = adminUsers.stream()
+//	                                         .map(Admin::getUser) // Assuming Admin has a getUser() method
+//	                                         .map(User::getEmail) // Extract emails from User objects
+//	                                         .filter(Objects::nonNull) // Filter out any null emails
+//	                                         .toList(); // Convert to a list
+//
+//	    // Fetch the current user from security context
+//	    String uploaderEmail = getUsernameFromSecurityContext();
+//	    User user = userRepository.findByEmail(uploaderEmail).orElseThrow(()-> new NoRecordFoundException("No USer found"));
+//	    String fullName;
+//	    if(user.getAdmin()!=null) {
+//	    	fullName=user.getAdmin().getFirstName()+" "+user.getAdmin().getLastName();
+//	    }
+//	    else {
+//	    	fullName=user.getEmployee().getFirstName()+" "+user.getEmployee().getLastName();
+//	    }
+//	    // Get the current date and time
+//	    LocalDateTime now = LocalDateTime.now();
+//	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy hh:mm a");
+//	    String formattedDateTime = now.format(formatter);
+//
+//	    // Prepare email content
+//	    String subject = "Notification: New Candidate Profiles Uploaded";
+//	    String body = String.format(
+//	            "Dear Admins,\n\n" +
+//	            "We are pleased to inform you that a new batch of candidate profiles has been successfully uploaded to the Trysol system.\n\n" +
+//	            "Please find the details of the upload below:\n" +
+//	            "----------------------------------\n" +
+//	            "Company Name: Trysol Global Services\n" +
+//	            "Uploader Name: %s\n" +
+//	            "Upload Date and Time: %s\n" +
+//	            "Total Files Uploaded: %d\n" +
+//	            "Inserted Rows: %d\n" +
+//	            "Skipped Rows: %d\n" +
+//	            "----------------------------------\n\n" +
+//	            "We kindly request that you log in to the system to review the newly uploaded profiles at your earliest convenience.\n\n" +
+//	            "Thank you for your attention to this matter.\n\n" +
+//	            "Best regards,\n" +
+//	            "The Trysol Team",
+//	            fullName, formattedDateTime, totalFiles, insertedRows, skippedRows
+//	        );
+//
+//	    // Send email if there are admin emails
+//	    if (!adminEmails.isEmpty()) {
+//	        emailService.sendEmail(subject, body, adminEmails);
+//	    }
+//	}
 
 	
 
