@@ -23,45 +23,48 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/trysol/auth")
-@CrossOrigin(origins = "http://localhost:3000", exposedHeaders = HttpHeaders.AUTHORIZATION)
+@CrossOrigin(
+    origins = "https://trysolats.vercel.app", // Correct Vercel URL
+    allowedHeaders = "*",
+    exposedHeaders = HttpHeaders.AUTHORIZATION // Expose Authorization header
+)
 public class AuthController {
 
-	private AuthService authService;
-	private JwtTokenProvider jwtTokenProvider;
-	//private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    private final AuthService authService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-	public AuthController(AuthService authService,JwtTokenProvider jwtTokenProvider) {
-		this.authService = authService;
-		this.jwtTokenProvider=jwtTokenProvider;
-	}
+    public AuthController(AuthService authService, JwtTokenProvider jwtTokenProvider) {
+        this.authService = authService;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
-	@PostMapping(value = { "/login"})
-	public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
-	    LoginResponseDto loginResponseDto = authService.login(loginDto);
+    @PostMapping(value = { "/login" })
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
+        LoginResponseDto loginResponseDto = authService.login(loginDto);
 
-	    String token = jwtTokenProvider.generateToken(SecurityContextHolder.getContext().getAuthentication());
+        String token = jwtTokenProvider.generateToken(SecurityContextHolder.getContext().getAuthentication());
 
-	    return ResponseEntity.ok()
-	            .header(HttpHeaders.AUTHORIZATION, token)
-	            .body(loginResponseDto);
-	}
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .body(loginResponseDto);
+    }
 
-	@PostMapping(value = { "/register"})
-	public ResponseEntity<String> register(@Valid @RequestBody RegisterDto registerDto) {
-		String response = authService.register(registerDto);
-		return new ResponseEntity<>(response, HttpStatus.CREATED);
-	}
-	
-	@GetMapping("/verifyAdmin")
+    @PostMapping(value = { "/register" })
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterDto registerDto) {
+        String response = authService.register(registerDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/verifyAdmin")
     public ResponseEntity<Boolean> verifyAdmin(@RequestParam(name = "auth") String token) {
-        // Remove "Bearer " prefix if present
-		if(token=="") {
-			return ResponseEntity.ok(false);
-		}
+        if (token.isEmpty()) {
+            return ResponseEntity.ok(false);
+        }
+
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
-        
+
         if (jwtTokenProvider.validateToken(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             if (authentication != null && authentication.getAuthorities().stream()
@@ -71,17 +74,17 @@ public class AuthController {
         }
         return ResponseEntity.ok(false);
     }
-	
-	@GetMapping("/verifyUser")
+
+    @GetMapping("/verifyUser")
     public ResponseEntity<Boolean> verifyUser(@RequestParam(name = "auth") String token) {
-        // Remove "Bearer " prefix if present
-		if(token=="") {
-			return ResponseEntity.ok(false);
-		}
+        if (token.isEmpty()) {
+            return ResponseEntity.ok(false);
+        }
+
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
-        
+
         if (jwtTokenProvider.validateToken(token)) {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             if (authentication != null && authentication.getAuthorities().stream()
@@ -91,10 +94,4 @@ public class AuthController {
         }
         return ResponseEntity.ok(false);
     }
-	
-//	@GetMapping("getCurrentUser")
-//	public Map<String,Object> getUserByEmail(@RequestParam(name = "email")String email) {
-//		return authService.getUserByEmail(email);
-//	}
-	
 }
